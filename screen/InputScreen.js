@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StatusBar, StyleSheet, Text, TextInput, View, Pressable,ImageBackground } from 'react-native';
+import { StatusBar, StyleSheet, Text, TextInput, View,ImageBackground,Alert,BackHandler } from 'react-native';
 import Button from '../components/Button';
 
 export default function InputScreen({ navigation }) {
@@ -7,9 +7,9 @@ export default function InputScreen({ navigation }) {
 
 
     const validation = (number) => {
-
-        if (number > 0 && number <= 100) {
-            navigation.navigate('Game', { data: number });
+        const inputNumber=parseInt(number);
+        if (inputNumber > 0 && inputNumber <= 100) {
+            navigation.navigate('Game', { data: inputNumber });
         } else {
             alert("Please enter a number between 1 and 100");
         }
@@ -28,7 +28,7 @@ export default function InputScreen({ navigation }) {
                 onChangeText={(number) => setNumber(number)}
                 // value={number}
             />
-            <Button title="Play" styles={styles.Button} onPress={() => validation(number)} />
+            <Button title="Play" styles={styles.button} onPress={() => validation(number)} />
             <Button title="Quit" styles={styles.button} onPress={() => {
                     Alert.alert(
                         'Are you leaving?',
@@ -80,14 +80,16 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         top:'25%'
     },
-    Button: {
+    button: {
         backgroundColor: '#FF6F61',
         borderRadius: 10,
         height: 40,
         width: 200,
         alignItems: 'center',
         justifyContent: 'center',
-        top:'25%'
+        top:'25%',
+        marginBottom:20,
+        marginTop:20
     },
     buttonText: {
         color: '#fff',
