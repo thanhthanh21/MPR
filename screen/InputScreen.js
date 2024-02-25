@@ -29,6 +29,15 @@ export default function InputScreen({ navigation }) {
                 // value={number}
             />
             <Button title="Play" styles={styles.Button} onPress={() => validation(number)} />
+            <Button title="Quit" styles={styles.button} onPress={() => {
+                    Alert.alert(
+                        'Are you leaving?',
+                        'You leaving me????',
+                        [
+                          { text: 'No, I am not leaving' },
+                          {text: 'Yes, I am leaving', onPress: () => BackHandler.exitApp()}
+                        ]
+                    )}} />     
         </View>
     );
 }
