@@ -2,23 +2,17 @@ import { StatusBar, StyleSheet, Text, View,ImageBackground,FlatList, BackHandler
 import React, { useEffect, useState } from 'react';
 import Button from '../components/Button';
 export default function GameScreen({ navigation, route }) {
-    const [number, setNumber] = useState(Math.floor(Math.random() * 100));
+    const [number, setNumber] = useState(Math.floor(Math.random() * (100-1))+1);
     const [lowest, setLowest] = useState(1);
     const [highest, setHighest] = useState(100);
-    const [guessHistory, setGuessHistory] = useState([]);
+    const [guessHistory] = useState([]);
     const [bingo, setBingo] = useState(false);
     const myNumber = route.params.data;
-    function generateRandomNumber(number, buttonType) {
-        if (buttonType === "Lower") {
-            const randomNumber = Math.floor(Math.random() * (number - lowest)) + lowest;
-            setHighest(number);
-            setNumber(randomNumber);
-        } else if (buttonType === "Greater") {
-            const randomNumber = Math.floor(Math.random() * (highest - number)) + number;
-            setLowest(number);
-            setNumber(randomNumber);
-        }
-        guessHistory.push(number);
+    useEffect(() => {
+        generateRandomNumber(lowest,highest);
+    }, [lowest,highest]);
+    function generateRandomNumber(min,max){
+        setNumber(Math.floor(Math.random() * (max - min) + min));
     }
     function disableButton(number, buttonType) {
         if (buttonType === "Lower" && number <= myNumber||bingo===true) {
@@ -34,14 +28,7 @@ export default function GameScreen({ navigation, route }) {
         if(number==myNumber){
             setBingo(true);
         guessHistory.push(number);
-            Alert.alert(
-                'Yay!',
-                'I got the correct answer, I am the best!',
-                [
-                  { text: 'Play Again', onPress: () => navigation.navigate('Input') },
-                  {text: 'Quit', onPress: () => BackHandler.exitApp()}
-                ]
-              );
+            navigation.navigate('EndGame', {guesses: guessHistory.length});
     }
         else {
             
@@ -69,7 +56,7 @@ export default function GameScreen({ navigation, route }) {
                     disableButton(number, "Lower")
                         ? styles.buttonDisabled
                         : styles.button // Apply disabled styles conditionally
-                } disabled={disableButton(number, "Lower")} onPress={() => generateRandomNumber(number, "Lower")} />
+                } disabled={disableButton(number, "Lower")} onPress={()=>{setHighest(number);guessHistory.push(number)}} />
                 <Button title="Bingo!" styles={bingo?styles.buttonDisabled:styles.button} disabled={bingo} onPress={() => {
                     handleBingoPressed();
                 }} />
@@ -77,7 +64,7 @@ export default function GameScreen({ navigation, route }) {
                     disableButton(number, "Greater")
                         ? styles.buttonDisabled
                         : styles.button // Apply disabled styles conditionally
-                } disabled={disableButton(number, "Greater")} onPress={() => generateRandomNumber(number, "Greater")} />
+                } disabled={disableButton(number, "Greater")} onPress={()=>{setLowest(number);guessHistory.push(number)}} />
             </View>
             </View>
            
@@ -85,7 +72,7 @@ export default function GameScreen({ navigation, route }) {
                 style={styles.listContainer}
 
                 data={guessHistory}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(index) => index.toString()}
                 renderItem={({ item, index }) => (
                     <View style={styles.listItem}>
                         <Text style={styles.listItemText}>Attempt {index + 1}: {item}</Text>
@@ -96,11 +83,11 @@ export default function GameScreen({ navigation, route }) {
                 <Button title="Play Again" styles={styles.button} onPress={() => navigation.navigate('Input')} />
                 <Button title="Quit" styles={styles.button} onPress={() => {
                     Alert.alert(
-                        'Are you leaving?',
-                        'You leaving me????',
+                        'Exit app',
+                        'Are you sure you want to exit?',
                         [
-                          { text: 'No, I am not leaving' },
-                          {text: 'Yes, I am leaving', onPress: () => BackHandler.exitApp()}
+                          { text: 'No' },
+                          {text: 'Yes', onPress: () => BackHandler.exitApp()}
                         ]
                     )}} />
             </View>
@@ -141,6 +128,13 @@ const styles = StyleSheet.create({
         fontSize: 24,
         marginBottom: 20,
         marginTop:20,
+        fontWeight: 'bold',
+    },
+    body:{
+        fontSize: 20,
+        marginBottom: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     guess: {
         fontSize: 40,
@@ -152,28 +146,6 @@ const styles = StyleSheet.create({
         paddingRight: 80,
         borderWidth: 1,
 
-    },
-
-    button: {
-        backgroundColor: '#FF6F61',
-        borderRadius: 10,
-        height: 40,
-        width: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 20,
-        marginTop:20,
-    },
-    buttonDisabled: {
-        backgroundColor: '#FF6F61',
-        borderRadius: 10,
-        height: 40,
-        width: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 20,
-        marginTop:20,
-        opacity: 0.5
     },
     listContainer: {
         width: '80%',

@@ -28,7 +28,7 @@ export default function InputScreen({ navigation }) {
                 onChangeText={(number) => setNumber(number)}
                 // value={number}
             />
-            <Button title="Play" styles={styles.Button} onPress={() => validation(number)} />
+            <Button title="Play" onPress={() => validation(number)} />
         </View>
     );
 }
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
-        // justifyContent: 'center',
+        justifyContent: 'center',
     },
     background: {
         position: 'absolute',
@@ -52,14 +52,12 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         marginBottom: 20,
-        top:'10%'
     },
     body:{
         fontSize: 20,
         marginBottom: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        top:'25%'
     },
     input: {
         width: 200,
@@ -69,16 +67,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 10,
         marginBottom: 20,
-        top:'25%'
-    },
-    Button: {
-        backgroundColor: '#FF6F61',
-        borderRadius: 10,
-        height: 40,
-        width: 200,
-        alignItems: 'center',
-        justifyContent: 'center',
-        top:'25%'
     },
     buttonText: {
         color: '#fff',
