@@ -13,34 +13,27 @@ export default function GameScreen({ navigation, route }) {
     }, [lowest,highest]);
     function generateRandomNumber(min,max){
         setNumber(Math.floor(Math.random() * (max - min) + min));
+        if(number===myNumber){
+            setBingo(false);
+        }
     }
     function disableButton(number, buttonType) {
-        if (buttonType === "Lower" && number <= myNumber||bingo===true) {
+        if (buttonType === "Lower" && number <= myNumber) {
             return true;
         }
-        if (buttonType === "Greater" && number >= myNumber||bingo===true ) {
+        if (buttonType === "Greater" && number >= myNumber ) {
             return true;
         }
         
         return false;
     }
     function handleBingoPressed(){
-        if(number==myNumber){
-            setBingo(true);
-        guessHistory.push(number);
-            navigation.navigate('EndGame', {guesses: guessHistory.length});
-    }
-        else {
-            
-                Alert.alert(
-                  'Do not lie to me!',
-                  'Seems like you are lying to me, you will be punished!',
-                  [
-                    { text: 'Liar!!!!', onPress: () => BackHandler.exitApp()} // Add your action here
-                  ]
-                );
-              };
+        if(number===myNumber){
+            setBingo(false);
         
+    }else{
+        setBingo(true);
+    }
     }
     return (
         <View style={styles.container}>
@@ -58,8 +51,10 @@ export default function GameScreen({ navigation, route }) {
                         : styles.button // Apply disabled styles conditionally
                 } disabled={disableButton(number, "Lower")} onPress={()=>{setHighest(number);guessHistory.push(number)}} />
                 <Button title="Bingo!" styles={bingo?styles.buttonDisabled:styles.button} disabled={bingo} onPress={() => {
-                    handleBingoPressed();
-                }} />
+                            handleBingoPressed();
+                    guessHistory.push(number);
+                    navigation.navigate('EndGame', {guesses: guessHistory.length});
+}} />
                 <Button title="+" styles={
                     disableButton(number, "Greater")
                         ? styles.buttonDisabled
