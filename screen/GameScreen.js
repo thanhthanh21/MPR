@@ -6,16 +6,12 @@ export default function GameScreen({ navigation, route }) {
     const [lowest, setLowest] = useState(1);
     const [highest, setHighest] = useState(100);
     const [guessHistory] = useState([]);
-    const [bingo, setBingo] = useState(false);
     const myNumber = route.params.data;
     useEffect(() => {
         generateRandomNumber(lowest,highest);
     }, [lowest,highest]);
     function generateRandomNumber(min,max){
         setNumber(Math.floor(Math.random() * (max - min) + min));
-        if(number===myNumber){
-            setBingo(false);
-        }
     }
     function disableButton(number, buttonType) {
         if (buttonType === "Lower" && number <= myNumber) {
@@ -27,14 +23,7 @@ export default function GameScreen({ navigation, route }) {
         
         return false;
     }
-    function handleBingoPressed(){
-        if(number===myNumber){
-            setBingo(false);
-        
-    }else{
-        setBingo(true);
-    }
-    }
+    
     return (
         <View style={styles.container}>
             <ImageBackground source={require('../assets/background.jpg')} style={styles.background} />
@@ -50,16 +39,15 @@ export default function GameScreen({ navigation, route }) {
                         ? styles.buttonDisabled
                         : styles.button // Apply disabled styles conditionally
                 } disabled={disableButton(number, "Lower")} onPress={()=>{setHighest(number);guessHistory.push(number)}} />
-                <Button title="Bingo!" styles={bingo?styles.buttonDisabled:styles.button} disabled={bingo} onPress={() => {
-                            handleBingoPressed();
+                <Button title="Bingo!" styles={styles.button} onPress={() => {
                     guessHistory.push(number);
-                    navigation.navigate('EndGame', {guesses: guessHistory.length});
+                    navigation.navigate('EndGame', {data: guessHistory.length,number:number});
 }} />
                 <Button title="+" styles={
                     disableButton(number, "Greater")
                         ? styles.buttonDisabled
                         : styles.button // Apply disabled styles conditionally
-                } disabled={disableButton(number, "Greater")} onPress={()=>{setLowest(number);guessHistory.push(number)}} />
+                } disabled={disableButton(number, "Greater")} onPress={()=>{setLowest(number+1);guessHistory.push(number)}} />
             </View>
             </View>
            

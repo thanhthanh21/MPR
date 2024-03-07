@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Text, BackHandler, StyleSheet, ImageBackground } from 'react-native';
 import Button from '../components/Button';
-export default function EndGame(navigation,route) {
-    const { guesses } = route.params;
+export default function EndGame({navigation,route}) {
+    const guesses  = route.params.data;
+    const number = route.params.number;
 
     const handlePlayAgain = () => {
         navigation.navigate('Input');
@@ -15,6 +16,8 @@ export default function EndGame(navigation,route) {
     return (
         <View style={styles.container}>
             <ImageBackground source={require('../assets/background.jpg')} style={styles.background} />
+            <Text style={styles.text}>Congratulations! You got the right the number!</Text>
+            <Text style={styles.text}>The number is: {number}</Text>
             <Text style={styles.text}>Number of Guesses: {guesses}</Text>
             <Button styles={styles.button} title="Play Again" onPress={() => handlePlayAgain()} />
             <Button styles={styles.button} title="Quit" onPress={() => handleQuitApp()} />
